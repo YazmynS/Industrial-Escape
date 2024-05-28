@@ -10,9 +10,10 @@ class Platformer extends Phaser.Scene {
 
     init() {
         // variables and settings
-        this.ACCELERATION = 500;
-        this.DRAG = 700;    // DRAG < ACCELERATION = icy slide
+        this.ACCELERATION = 400;
+        this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
         this.physics.world.gravity.y = 4000;
+        this.physics.world.TILE_BIAS = 24
         this.JUMP_VELOCITY = -700;
         this.PARTICLE_VELOCITY = 50;
         this.SCALE = 3.0;
@@ -23,14 +24,12 @@ class Platformer extends Phaser.Scene {
     create() {
         //document.getElementById('description').innerHTML = '<h2>Level 1: left/right: move // up: climb/jump // Space: jump // R: restart level // D: debug'
 // set up Key Inputs
-        //left, right, up, down
+        //left, right, up, down, sapce
         cursors = this.input.keyboard.createCursorKeys();
-        
-        //space(jump)
-        this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        
+    
         //reset
         this.rKey = this.input.keyboard.addKey('R');
+        this.eKey = this.input.keyboard.addKey('E');
         
         // debug 
         this.input.keyboard.on('keydown-D', () => {
@@ -133,7 +132,7 @@ class Platformer extends Phaser.Scene {
     this.ladderGroup = this.add.group(this.ladder);
 
 // Set up player 
-        my.sprite.player = this.physics.add.sprite(600, 100, "platformer_characters", "tile_0000.png").setScale(.7);
+        my.sprite.player = this.physics.add.sprite(10, 600, "platformer_characters", "tile_0000.png").setScale(.7);
         my.sprite.player.setCollideWorldBounds(true);
         my.sprite.player.onRope = false; 
         my.sprite.player.onLadder = false;
@@ -170,15 +169,13 @@ class Platformer extends Phaser.Scene {
 // Handle collision detection
         //ground
         this.physics.add.collider(my.sprite.player, this.groundLayer);
+
+        //platform
+        this.physics.add.collider(my.sprite.player, this.platformLayer);
         
         //ground goo (Player moves slower through Groudgoo)
         this.physics.add.collider(my.sprite.player, this.groundGooLayer, (obj1, obj2) =>{
             obj1.setVelocityX(10);
-        });
-
-        //door
-        this.physics.add.overlap(my.sprite.player, this.doorGroup, (obj1, obj2)=>{
-            my.sprite.player.onDoor = true;
         });
 
         //signs
@@ -192,16 +189,7 @@ class Platformer extends Phaser.Scene {
         this.physics.add.overlap(my.sprite.player, this.batteryGroup, (obj1, obj2) => {
             obj2.destroy(); // remove battery on overlap
         })
-
-        //ropes
-        this.physics.add.overlap(my.sprite.player, this.ropeGroup, (obj1, obj2) => {  
-            //if collision with roppe, set gravity to 0
-            obj1.onRope = true;
-        }) 
-        
-        
          
-        
         this.physics.add.collider(my.sprite.player, this.gooLakeLayer, (obj1, obj2) =>{
             obj1.x = this.SpawnX;
             obj1.y = this.SpawnY;
@@ -210,11 +198,7 @@ class Platformer extends Phaser.Scene {
 
     update() {
         
-        if (!this.physics.overlap(my.sprite.player, this.ladderGroup)) {
-            my.sprite.player.onLadder = false;
-        }else{
-            my.sprite.player.onLadder = true;
-        } 
+        
         //Move Left
         if(cursors.left.isDown) {
             my.sprite.player.setAccelerationX(-this.ACCELERATION);
@@ -257,31 +241,63 @@ class Platformer extends Phaser.Scene {
             my.sprite.player.anims.play('jump');
         }
             
-        if(my.sprite.player.body.blocked.down && Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+        if(my.sprite.player.body.blocked.down && Phaser.Input.Keyboard.JustDown(cursors.space)) {
             my.sprite.player.body.setVelocityY(this.JUMP_VELOCITY);
-            my.vfx.walking.start();
             my.vfx.jumping.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-10, my.sprite.player.displayHeight/2-5, false);
             my.vfx.jumping.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
-        }
-        else{
-            my.vfx.jumping.stop()
+        }else {
+            my.vfx.jumping.stop();
         }
 
         //Restart Game
         if(Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.restart();
         }
+//Rope Stuff
+        if (!this.physics.overlap(my.sprite.player, this.RopeGroup)) {
+            my.sprite.player.onRope = false;
+        }else{
+            my.sprite.player.onRope = true;
+        } 
 
-        // Player is on a rope, enable climbing
-        if (cursors.up.isDown && my.sprite.player.onRope) {
-            // Climb up logic
+        if (my.sprite.player.onRope || my.sprite.player.onLadder || my.sprite.player.onDoor) {
+            my.sprite.player.body.allowGravity = false;
+            cursors.down.enabled = true;
+            cursors.up.enabled = true;
+        }else if (!my.sprite.player.onRope && my.sprite.player.onLadder) {
+            //if player no longer overlaps if rope, allow gravity but disable up and down keys
+            my.sprite.player.body.allowGravity = true;
+            cursors.down.enabled = false;
+            cursors.up.enabled = false;
+        }
+        // Climb up Rope
+        if (cursors.up.enabled && cursors.up.isDown) {
+            cursors.down.isDown = false;
+            cursors.down.isUp = true;
             my.sprite.player.setVelocityY(-this.ACCELERATION);
-        } else if (cursors.down.isDown && my.sprite.player.onRope) {
-            // Climb down logic                
+        } 
+        // Climb down
+        else if (cursors.down.enabled && cursors.down.isDown) {
+            cursors.up.isDown = false;
+            cursors.up.isUp = true;
             my.sprite.player.setVelocityY(this.ACCELERATION);
         }
+        else {
+            // Stop player movement
+            cursors.up.isDown = false;
+            cursors.down.isDown = false;
+            cursors.up.isUp = true;
+            cursors.down.isUp = true;
+        } 
 
+//Ladder Stuff
         //If on ladder, disable gravity but enable up and down keys
+        if (!this.physics.overlap(my.sprite.player, this.ladderGroup)) {
+            my.sprite.player.onLadder = false;
+        }else{
+            my.sprite.player.onLadder = true;
+        } 
+        
         if (my.sprite.player.onLadder) {
             my.sprite.player.body.allowGravity = false;
             cursors.down.enabled = true;
@@ -292,25 +308,37 @@ class Platformer extends Phaser.Scene {
             my.sprite.player.body.allowGravity = true;
             cursors.down.enabled = false;
             cursors.up.enabled = false;
-            my.sprite.player.setVelocityY(this.ACCELERATION);
-            
+            //my.sprite.player.setVelocityY(this.ACCELERATION);
         }
-         console.log(cursors.up.isDown);  
         // Climb up ladder
         if (cursors.up.enabled && cursors.up.isDown) {
+            cursors.down.isDown = false;
+            cursors.down.isUp = true;
             my.sprite.player.setVelocityY(-this.ACCELERATION);
         } 
         // Climb down
-        else if (cursors.down.isDown  && cursors.down.enabled) {
+        else if (cursors.down.enabled && cursors.down.isDown) {
+            cursors.up.isDown = false;
+            cursors.up.isUp = true;
             my.sprite.player.setVelocityY(this.ACCELERATION);
         }
         else {
             // Stop player movement
-            my.sprite.player.setVelocityY(0);
-        }    
+            cursors.up.isDown = false;
+            cursors.down.isDown = false;
+            cursors.up.isUp = true;
+            cursors.down.isUp = true;
+        }      
 
         //Door End Game
-        if (my.sprite.player.onDoor && cursors.up.isDown){
+        //door
+        if(this.physics.add.overlap(my.sprite.player, this.doorGroup)){
+            my.sprite.player.onDoor = true;
+        }else{
+            my.sprite.player.onDoor = false;     
+        }
+
+        if (my.sprite.player.onDoor && Phaser.Input.Keyboard.JustDown(this.eKey)){
             this.scene.start("sceneEnd");
         }
     }
@@ -326,6 +354,3 @@ class Platformer extends Phaser.Scene {
         //If collided with, return to last hazard sign collided with (X)
 //Add behaviors to:
     //beams
-
-//TA QUESTIONS
-    //2. Ladder Issues
