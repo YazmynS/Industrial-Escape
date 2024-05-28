@@ -64,8 +64,8 @@
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 832,
-                "y": 201
+                "x": 878.5,
+                "y": 200
             }
         },
         "EndScene.tmj#tilemap_packed": {
@@ -96,11 +96,11 @@
                 18,
                 6
             ],
-            "scale": 0.75,
-            "selectedLayer": 0,
+            "scale": 1.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 460,
-                "y": 458.6666666666667
+                "x": 275.66666666666663,
+                "y": 416
             }
         },
         "Industrial Escape.tmj#tilemap-backgrounds_packed": {
@@ -146,11 +146,13 @@
     "map.tileWidth": 18,
     "map.width": 100,
     "openFiles": [
-        "Industrial Escape.tmj"
+        "Industrial Escape.tmj",
+        "EndScene.tmj"
     ],
     "project": "Industrial Escape.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "EndScene.tmj",
         "Industrial Escape.tmj",
         "Industrial Escape.json",
         "Industrial Escape.tmx",
