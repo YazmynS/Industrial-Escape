@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Industrial Escape.tmj",
+    "activeFile": "EndScene.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -60,16 +60,52 @@
         "C:/Users/yazmy/OneDrive/Desktop/StarterPlatformer-2/assets/platformer-level-1.tmx#kenny_tilemap_packed": {
             "scaleInDock": 1
         },
+        "EndScene.json": {
+            "expandedObjectLayers": [
+                6,
+                5,
+                3
+            ],
+            "scale": 1,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 259,
+                "y": 133
+            }
+        },
+        "EndScene.json#tilemap_packed": {
+            "scaleInDock": 1
+        },
         "EndScene.tmj": {
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 878.5,
-                "y": 200
+                "x": 877.5,
+                "y": 199
             }
         },
         "EndScene.tmj#tilemap_packed": {
             "scaleInDock": 1
+        },
+        "EndScene.tmx": {
+            "expandedObjectLayers": [
+                6,
+                5,
+                3
+            ],
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 370,
+                "y": -5
+            }
+        },
+        "EndScene.tmx#tilemap-backgrounds_packed": {
+            "scaleInDock": 1
+        },
+        "EndScene.tmx#tilemap_packed": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "Industrial Escape.json": {
             "expandedObjectLayers": [
@@ -93,14 +129,14 @@
         },
         "Industrial Escape.tmj": {
             "expandedObjectLayers": [
-                18,
-                6
+                6,
+                18
             ],
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 275.66666666666663,
-                "y": 416
+                "x": 538.3333333333333,
+                "y": 418
             }
         },
         "Industrial Escape.tmj#tilemap-backgrounds_packed": {
@@ -111,14 +147,11 @@
             "scaleInDock": 1
         },
         "Industrial Escape.tmx": {
-            "expandedObjectLayers": [
-                4
-            ],
-            "scale": 0.75,
-            "selectedLayer": 3,
+            "scale": 2,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 372.66666666666663,
-                "y": 730
+                "x": 159,
+                "y": 406.5
             }
         },
         "Industrial Escape.tmx#tilemap": {
@@ -135,34 +168,57 @@
         "Industrial Escape.tmx#tilemap_packed": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "Title Screen.tmj": {
+            "expandedObjectLayers": [
+                6,
+                7,
+                9,
+                4
+            ],
+            "scale": 1,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 673.5,
+                "y": 330
+            }
+        },
+        "Title Screen.tmj#tilemap_packed": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "C:/Users/yazmy/OneDrive/Desktop/Industrial Escape/assets",
     "last.imagePath": "C:/Users/yazmy/OneDrive/Desktop/Industrial Escape/assets",
     "map.height": 40,
-    "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
-    "map.lastUsedFormat": "json",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "map.width": 100,
     "openFiles": [
-        "Industrial Escape.tmj",
-        "EndScene.tmj"
+        "Industrial Escape.tmx",
+        "EndScene.json",
+        "Title Screen.tmj",
+        "EndScene.tmx"
     ],
     "project": "Industrial Escape.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "Industrial Escape.tmx",
+        "EndScene.json",
+        "Title Screen.tmj",
+        "EndScene.tmx",
         "EndScene.tmj",
         "Industrial Escape.tmj",
         "Industrial Escape.json",
-        "Industrial Escape.tmx",
         "C:/Users/yazmy/OneDrive/Desktop/Industrial Escape/Industrial Escape.tmx",
         "C:/Users/yazmy/OneDrive/Desktop/PlatformImprovement/assets/platformer-level-1.tmx",
         "C:/Users/yazmy/OneDrive/Desktop/StarterPlatformer-2/assets/platformer-level-1.tmx"
     ],
     "tileset.embedInMap": true,
-    "tileset.margin": 1,
-    "tileset.spacing": 1,
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
     "tileset.tileSize": {
         "height": 18,
         "width": 18

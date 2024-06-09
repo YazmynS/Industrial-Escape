@@ -1,0 +1,34 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "#tilemap_packed": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yazmy/OneDrive/Desktop/Pathfinder/assets/tiny-town-tileset.tmx": {
+            "scale": 1.2780468749999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 616.9570267131244,
+                "y": 203.43541781282477
+            }
+        },
+        "C:/Users/yazmy/OneDrive/Desktop/Pathfinder/assets/tiny-town-tileset.tmx#kenney-tiny-town": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/yazmy/OneDrive/Desktop/Industrial Escape/assets",
+    "openFiles": [
+    ],
+    "project": "Tiled-to-Phaser.tiled-project",
+    "recentFiles": [
+        "C:/Users/yazmy/OneDrive/Desktop/Pathfinder/assets/tiny-town-tileset.tmx"
+    ],
+    "tileset.embedInMap": true
+}

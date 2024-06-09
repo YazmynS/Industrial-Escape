@@ -14,6 +14,7 @@ class Load extends Phaser.Scene {
         this.load.image("tilemap_back", "tilemap-backgrounds_packed.png");          // Packed background
         this.load.tilemapTiledJSON("Industrial Escape", "Industrial Escape.tmj");   // Tilemap in JSON   
         this.load.tilemapTiledJSON("EndScene", "EndScene.tmj");
+        this.load.tilemapTiledJSON("TitleScreen", "Title Screen.tmj");
 
         // Load the tilemap as a spritesheet
         this.load.spritesheet("tilemap_sheet", "tilemap_packed.png", {
@@ -57,7 +58,7 @@ class Load extends Phaser.Scene {
         });
 
          // ...and pass to the next Scene
-         this.scene.start("platformerScene");
+         this.scene.start("sceneEnd");
     }
 
     // Never get here since a new scene is started in create()

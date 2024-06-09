@@ -1,12 +1,12 @@
-class Platformer extends Phaser.Scene {
+class Title extends Phaser.Scene {
     constructor() {
-        super("platformerScene");
+        super("titleScreen");
     }
 
     preload(){
         //load title animation plugin
         this.load.scenePlugin("AnimatedTiles", "./lib/AnimatedTiles.js", "animatedTiles", "animatedTiles");
-    }   
+    } 
 
     init() {
         // variables and settings
@@ -20,10 +20,9 @@ class Platformer extends Phaser.Scene {
         this.SpawnX = 10;
         this.SpawnY = 10;
     }
-
-    create() {
-        //create game instructions
-        document.getElementById('description').innerHTML = '<h2>Level 1: left/right: move // up: climb/jump // Space: jump // R: restart level // D: debug'
+    create() {        
+//create game instructions
+document.getElementById('description').innerHTML = '<h2>Level 1: left/right: move // up: climb/jump // Space: jump // R: restart level // D: debug'
 
 // set up Key Inputs
         //left, right, up, down, space
@@ -40,7 +39,7 @@ class Platformer extends Phaser.Scene {
         }, this);
         
         //Create Game Map
-        this.map = this.add.tilemap("Industrial Escape", 18, 18, 72, 40);
+        this.map = this.add.tilemap("Title Screen", 18, 18, 72, 40);
 
         //Create Tilesets
         this.tileset = this.map.addTilesetImage("tilemap_packed", "tilemap_tiles");
@@ -239,10 +238,9 @@ class Platformer extends Phaser.Scene {
             my.vfx.gooLakeParticles.play();
         });
     }
-
-    update() {        
-        //Move Left
-        if(cursors.left.isDown) {
+    update(){
+         //Move Left
+         if(cursors.left.isDown) {
             my.sprite.player.setAccelerationX(-this.ACCELERATION);
             my.sprite.player.resetFlip();
             my.sprite.player.anims.play('walk', true);
@@ -382,15 +380,8 @@ class Platformer extends Phaser.Scene {
         }
 
         if (my.sprite.player.onDoor && Phaser.Input.Keyboard.JustDown(this.eKey)){
-            this.scene.start("sceneEnd");
-        }
+            this.scene.start("platformerScene");
+        }      
+       
     }
 }
-//Add Enemy Sprites
-//Add Collisions
-    //Ropes (Safe)
-        //You should be able to jump from a rope
-    //Enemies (unsafe)
-        //If collided with, return to last hazard sign collided with (X)
-//Add behaviors to:
-    //beams
