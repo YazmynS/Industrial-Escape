@@ -6,6 +6,14 @@ class Platformer extends Phaser.Scene {
     preload(){
         //load title animation plugin
         this.load.scenePlugin("AnimatedTiles", "./lib/AnimatedTiles.js", "animatedTiles", "animatedTiles");
+        this.load.audio('backMusic',  './assets/Audio/mixkit-infected-vibes-157.mp3');
+        this.load.audio("walkingSound", "assets/Audio/lowRandom.ogg");
+        this.load.audio("jumpingSound", "assets/Audio/phaseJump1.ogg");
+        this.load.audio("gooLakeSound", "assets/Audio/pepSound1.ogg");
+        this.load.audio("signSound", "assets/Audio/threeTone2.ogg");
+        this.load.audio("batterySound","assets/Audio/powerUp2.ogg");        
+        this.load.audio("groundSound", "assets/Audio/pepSound3.ogg");
+
     }   
 
     init() {
@@ -22,6 +30,16 @@ class Platformer extends Phaser.Scene {
     }
 
     create() {
+        //Create Music
+        const music = this.sound.add('backMusic',{volume: 0.4, loop: true});
+        music.play();
+        this.wMusic = this.sound.add("walkingSound", {loop: true, rate: 5.5});
+        this.jMusic = this.sound.add("jumpingSound", {loop: true, rate: 1.5});
+        this.lMusic = this.sound.add("gooLakeSound");
+        this.sMusic = this.sound.add("signSound");
+        this.bMusic = this.sound.add("batterySound");
+        this.gMusic = this.sound.add("groundSound", {loop: true, rate: 2.0});
+        
         //create game instructions
         document.getElementById('description').innerHTML = '<h2>Level 1: left/right: move // up: climb/jump // Space: jump // R: restart level // D: debug'
 
@@ -133,44 +151,55 @@ class Platformer extends Phaser.Scene {
     this.ladderGroup = this.add.group(this.ladder);
 
 // Set up player 
-        my.sprite.player = this.physics.add.sprite(10, 600, "platformer_characters", "tile_0000.png").setScale(.7);
+        my.sprite.player = this.physics.add.sprite(600, 400, "platformer_characters", "tile_0000.png").setScale(.7);
         my.sprite.player.setCollideWorldBounds(true);
         my.sprite.player.onRope = false; 
         my.sprite.player.onLadder = false;
-        my.sprite.player.onDoor = false;
+        //my.sprite.player.onDoor = false;
+
 //Set up particle systems
-        //sign particles
-        my.vfx.gooLakeParticles = this.add.particles(0, 0, "kenny-particles", {
-            frame: ['smoke_01.png', 'smoke_05.png'],
-            //random: true,
+        //battery particles
+        my.vfx.batteryParticles = this.add.particles(0, 0, "kenny-particles", {
+            frame: ['circle_03.png', 'circle_01.png'],
             scale: {start: 0.03, end: 0.1}, 
+            maxParticles: 30,
             maxAliveParticles: 3,
+            quantity: 3,
             lifespan: 250,
-            //tintFill: true,
-            tint: 0x00FF00,
-            // TODO: Try: gravityY: -400,
+            tint: 0xFACADE,
             alpha: {start: 1, end: 0.1}, 
         });
-        my.vfx.gooLakeParticles.stop()
+        my.vfx.batteryParticles.stop()
 
-        //battery particles
-
+        //sign particles
+        my.vfx.signParticles = this.add.particles(0, 0, "kenny-particles", {
+            frame: ['star_07.png', 'star_08.png'],
+            scale: {start: 0.03, end: 0.1}, 
+            maxAParticles: 3,
+            lifespan: 250,
+            tint: 0x0000FF,
+            alpha: {start: 1, end: 0.1}, 
+        });
+        my.vfx.signParticles.stop()
 
         //goo lake particles
-
-
-
+        my.vfx.lakeParticles = this.add.particles(0, 0, "kenny-particles", {
+            frame: ['dirt_01.png', 'dirt_02.png'],
+            scale: {start: 0.03, end: 0.1}, 
+            maxParticles: 3,
+            lifespan: 250,
+            tint: 0x00FF00,
+            alpha: {start: 1, end: 0.1}, 
+        });
+        my.vfx.lakeParticles.stop()
 
         //walking on goo particles
         my.vfx.gooWalking = this.add.particles(0, 0, "kenny-particles", {
             frame: ['smoke_01.png', 'smoke_05.png'],
-            //random: true,
             scale: {start: 0.03, end: 0.1}, 
             maxAliveParticles: 3,
             lifespan: 250,
-            //tintFill: true,
             tint: 0x00FF00,
-            // TODO: Try: gravityY: -400,
             alpha: {start: 1, end: 0.1}, 
         });
         my.vfx.gooWalking.stop()
@@ -178,13 +207,9 @@ class Platformer extends Phaser.Scene {
         //walking particles
         my.vfx.walking = this.add.particles(0, 0, "kenny-particles", {
             frame: ['smoke_01.png', 'smoke_05.png'],
-            //random: true,
             scale: {start: 0.03, end: 0.1}, 
-            maxAliveParticles: 3,
+            maxAliveParticles: 2,
             lifespan: 250,
-            //tintFill: true,
-            tint: 0x808080,
-            // TODO: Try: gravityY: -400,
             alpha: {start: 1, end: 0.1}, 
         });
         my.vfx.walking.stop()
@@ -196,11 +221,8 @@ class Platformer extends Phaser.Scene {
             scale: {start: 0.01, end: 0.1}, 
             maxAliveParticles: 3,
             lifespan: 250,
-            // TODO: Try: gravityY: -400,
             alpha: {start: 1, end: 0.1}, 
         });
-        
-        //my.vfx.walking.particleColor(0xFACADE);
         my.vfx.jumping.stop()
 
 //Set up Camera
@@ -211,14 +233,27 @@ class Platformer extends Phaser.Scene {
 
 // Handle collision detection
         //ground
-        this.physics.add.collider(my.sprite.player, this.groundLayer);
+        this.physics.add.collider(my.sprite.player, this.groundLayer, (obj1, obj2) =>{
+            if(!this.wMusic.isPlaying){
+                this.wMusic.play();
+            }
+            else{
+                this.wMusic.stop();
+            }
+        });
 
         //platform
         this.physics.add.collider(my.sprite.player, this.platformLayer);
         
-        //ground goo (Player moves slower through Groudgoo)
+        //ground goo (Player moves slower through Groundgoo)
         this.physics.add.collider(my.sprite.player, this.groundGooLayer, (obj1, obj2) =>{
             obj1.setVelocityX(10);
+            if(!this.gMusic.isPlaying){
+                this.gMusic.play();
+            }
+            else{
+                this.gMusic.stop();
+            }
         });
 
         //signs
@@ -226,17 +261,38 @@ class Platformer extends Phaser.Scene {
            //Set Spawn point = to the players position when they collided with the sign
             this.SpawnX = my.sprite.player.x; 
             this.SpawnY = my.sprite.player.y;
+            
+            //PLay Music
+            if(!this.sMusic.isPlaying){
+                this.sMusic.play();
+            }else{
+                this.sMusic.stop();
+            }
         })
 
         //batteries
         this.physics.add.overlap(my.sprite.player, this.batteryGroup, (obj1, obj2) => {
             obj2.destroy(); // remove battery on overlap
+
+            //Play Music
+            if(!this.bMusic.isPlaying){
+                this.bMusic.play();
+            }else{
+                this.bMusic.stop();
+            }
         })
-         
+         //goo lake
         this.physics.add.collider(my.sprite.player, this.gooLakeLayer, (obj1, obj2) =>{
             obj1.x = this.SpawnX;
             obj1.y = this.SpawnY;
-            my.vfx.gooLakeParticles.play();
+            //my.vfx.gooLakeParticles.play();
+
+            //Play Music
+            if(!this.lMusic.isPlaying){
+                this.lMusic.play();
+            }else{
+                this.lMusic.stop();
+            }
         });
     }
 
@@ -246,24 +302,24 @@ class Platformer extends Phaser.Scene {
             my.sprite.player.setAccelerationX(-this.ACCELERATION);
             my.sprite.player.resetFlip();
             my.sprite.player.anims.play('walk', true);
-            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-10, my.sprite.player.displayHeight/2-5, false);
-            my.vfx.walking.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
+            //my.vfx.walkingParticles.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-10, my.sprite.player.displayHeight/2-5, false);
+            //my.vfx.walkingParticles.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
 
             // Only play smoke effect if touching the ground
-            if (my.sprite.player.body.blocked.down) {
-                my.vfx.walking.start();
-            }
+            /*if (my.sprite.player.body.blocked.down) {
+                my.vfx.walkingParticles.start();
+            }*/
         //Move Right
         } else if(cursors.right.isDown) {
             my.sprite.player.setAccelerationX(this.ACCELERATION);
             my.sprite.player.setFlip(true, false);
             my.sprite.player.anims.play('walk', true);
-            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-10, my.sprite.player.displayHeight/2-5, false);
-            my.vfx.walking.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
+            //my.vfx.walkingParticles.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-10, my.sprite.player.displayHeight/2-5, false);
+            //my.vfx.walkingParticles.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
 
             // Only play smoke effect if touching the ground
             if (my.sprite.player.body.blocked.down) {
-                my.vfx.walking.start();
+                //my.vfx.walkingParticles.start();
             }
 
         //Stop
@@ -272,65 +328,33 @@ class Platformer extends Phaser.Scene {
             my.sprite.player.setAccelerationX(0);
             my.sprite.player.setDragX(this.DRAG);
             my.sprite.player.anims.play('idle');
-            my.vfx.walking.stop();
-
+            //my.vfx.walkingParticles.stop();
         }
 
         // Jump
         // note that we need body.blocked rather than body.touching b/c the former applies to tilemap tiles and the latter to the "ground"
         if(!my.sprite.player.body.blocked.down) {
             my.sprite.player.anims.play('jump');
-            
+            if(!this.jMusic.isPlaying){
+                this.jMusic.play();
+            }  
         }
+        else{
+            this.jMusic.stop();
+        }    
+        
             
         if(my.sprite.player.body.blocked.down && Phaser.Input.Keyboard.JustDown(cursors.space)) {
             my.sprite.player.body.setVelocityY(this.JUMP_VELOCITY);
             my.vfx.jumping.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-10, my.sprite.player.displayHeight/2-5, false);
             my.vfx.jumping.setParticleSpeed(this.PARTICLE_VELOCITY, 0);
-        }else {
+        }/*else {
             my.vfx.jumping.stop();
-        }
+        }*/
 
         //Restart Game
         if(Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.restart();
-        }
-        
-//Rope Stuff
-        if (!this.physics.overlap(my.sprite.player, this.RopeGroup)) {
-            my.sprite.player.onRope = false;
-        }else{
-            my.sprite.player.onRope = true;
-        } 
-
-        if (my.sprite.player.onRope || my.sprite.player.onLadder || my.sprite.player.onDoor) {
-            my.sprite.player.body.allowGravity = false;
-            cursors.down.enabled = true;
-            cursors.up.enabled = true;
-        }else if (!my.sprite.player.onRope && my.sprite.player.onLadder) {
-            //if player no longer overlaps if rope, allow gravity but disable up and down keys
-            my.sprite.player.body.allowGravity = true;
-            cursors.down.enabled = false;
-            cursors.up.enabled = false;
-        }
-        // Climb up Rope
-        if (cursors.up.enabled && cursors.up.isDown) {
-            cursors.down.isDown = false;
-            cursors.down.isUp = true;
-            my.sprite.player.setVelocityY(-this.ACCELERATION);
-        } 
-        // Climb down
-        else if (cursors.down.enabled && cursors.down.isDown) {
-            cursors.up.isDown = false;
-            cursors.up.isUp = true;
-            my.sprite.player.setVelocityY(this.ACCELERATION);
-        }
-        else {
-            // Stop player movement
-            cursors.up.isDown = false;
-            cursors.down.isDown = false;
-            cursors.up.isUp = true;
-            cursors.down.isUp = true;
         } 
 
 //Ladder Stuff
@@ -341,28 +365,37 @@ class Platformer extends Phaser.Scene {
             my.sprite.player.onLadder = true;
         } 
         
-        if (my.sprite.player.onLadder) {
-            my.sprite.player.body.allowGravity = false;
+        if (my.sprite.player.onLadder || my.sprite.player.onRope) {
+            if(my.sprite.player.onLadder){
+                my.sprite.player.body.allowGravity = false;
+                my.sprite.player.setVelocityY(0);
+            }
+            else if (my.sprite.player.onRope)
+                {
+                    my.sprite.player.setVelocityY(.05);
+                }
+
             cursors.down.enabled = true;
             cursors.up.enabled = true;
-            my.sprite.player.setVelocityY(0);
-        }else if (!my.sprite.player.onLadder) {
+        }    
+        else{
             //if player no longer overlaps if ladder, allow gravity but disable up and down keys
             my.sprite.player.body.allowGravity = true;
             cursors.down.enabled = false;
             cursors.up.enabled = false;
             //my.sprite.player.setVelocityY(this.ACCELERATION);
         }
+            
         // Climb up ladder
         if (cursors.up.enabled && cursors.up.isDown) {
-            cursors.down.isDown = false;
-            cursors.down.isUp = true;
+            //cursors.down.isDown = false;
+            //cursors.down.isUp = true;
             my.sprite.player.setVelocityY(-this.ACCELERATION);
         } 
-        // Climb down
+        // Climb down ladder
         else if (cursors.down.enabled && cursors.down.isDown) {
-            cursors.up.isDown = false;
-            cursors.up.isUp = true;
+            //cursors.up.isDown = false;
+            //cursors.up.isUp = true;
             my.sprite.player.setVelocityY(this.ACCELERATION);
         }
         else {
@@ -371,7 +404,32 @@ class Platformer extends Phaser.Scene {
             cursors.down.isDown = false;
             cursors.up.isUp = true;
             cursors.down.isUp = true;
-        }      
+        }    
+//Rope Stuff
+        if (!this.physics.overlap(my.sprite.player, this.ropeGroup)) {
+            my.sprite.player.onRope = false;
+        }else{
+            my.sprite.player.onRope = true;
+        } 
+        // Climb up Rope
+        if (cursors.up.enabled && cursors.up.isDown) {
+            //cursors.down.isDown = false;
+            //cursors.down.isUp = true;
+            my.sprite.player.setVelocityY(-this.ACCELERATION);
+        } 
+        // Climb down
+        else if (cursors.down.enabled && cursors.down.isDown) {
+        // cursors.up.isDown = false;
+            //cursors.up.isUp = true;
+            my.sprite.player.setVelocityY(this.ACCELERATION);
+        }
+        else {
+            // Stop player movement
+            cursors.up.isDown = false;
+            cursors.down.isDown = false;
+            cursors.up.isUp = true;
+            cursors.down.isUp = true;
+        }  
 
         //Door End Game
         //door
@@ -388,8 +446,6 @@ class Platformer extends Phaser.Scene {
 }
 //Add Enemy Sprites
 //Add Collisions
-    //Ropes (Safe)
-        //You should be able to jump from a rope
     //Enemies (unsafe)
         //If collided with, return to last hazard sign collided with (X)
 //Add behaviors to:

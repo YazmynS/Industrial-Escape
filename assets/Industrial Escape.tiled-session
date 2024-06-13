@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "EndScene.tmx",
+    "activeFile": "Title Screen.tmj",
     "expandedProjectPaths": [
         "."
     ],
@@ -62,15 +62,15 @@
         },
         "EndScene.json": {
             "expandedObjectLayers": [
+                3,
                 6,
-                5,
-                3
+                5
             ],
             "scale": 1,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 259,
-                "y": 133
+                "x": 509.5,
+                "y": 180.5
             }
         },
         "EndScene.json#tilemap_packed": {
@@ -89,15 +89,15 @@
         },
         "EndScene.tmx": {
             "expandedObjectLayers": [
+                3,
                 6,
-                5,
-                3
+                5
             ],
             "scale": 1,
-            "selectedLayer": 1,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 370,
-                "y": -5
+                "x": 397.5,
+                "y": 103
             }
         },
         "EndScene.tmx#tilemap-backgrounds_packed": {
@@ -147,11 +147,15 @@
             "scaleInDock": 1
         },
         "Industrial Escape.tmx": {
-            "scale": 2,
-            "selectedLayer": 6,
+            "expandedObjectLayers": [
+                18,
+                16
+            ],
+            "scale": 0.75,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 159,
-                "y": 406.5
+                "x": 388.66666666666674,
+                "y": 280
             }
         },
         "Industrial Escape.tmx#tilemap": {
@@ -171,16 +175,16 @@
         },
         "Title Screen.tmj": {
             "expandedObjectLayers": [
+                4,
+                3,
                 6,
-                7,
-                9,
-                4
+                7
             ],
             "scale": 1,
-            "selectedLayer": 5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 673.5,
-                "y": 330
+                "x": 565.5,
+                "y": 228
             }
         },
         "Title Screen.tmj#tilemap_packed": {
@@ -192,7 +196,7 @@
     "last.imagePath": "C:/Users/yazmy/OneDrive/Desktop/Industrial Escape/assets",
     "map.height": 40,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedFormat": "json",
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "map.width": 100,
@@ -207,8 +211,8 @@
     "recentFiles": [
         "Industrial Escape.tmx",
         "EndScene.json",
-        "Title Screen.tmj",
         "EndScene.tmx",
+        "Title Screen.tmj",
         "EndScene.tmj",
         "Industrial Escape.tmj",
         "Industrial Escape.json",
