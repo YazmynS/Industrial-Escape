@@ -151,7 +151,7 @@ class Platformer extends Phaser.Scene {
     this.ladderGroup = this.add.group(this.ladder);
 
 // Set up player 
-        my.sprite.player = this.physics.add.sprite(600, 400, "platformer_characters", "tile_0000.png").setScale(.7);
+        my.sprite.player = this.physics.add.sprite(10, 600, "platformer_characters", "tile_0000.png").setScale(.7);
         my.sprite.player.setCollideWorldBounds(true);
         my.sprite.player.onRope = false; 
         my.sprite.player.onLadder = false;
